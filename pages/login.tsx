@@ -2,15 +2,27 @@ import type { NextPage } from 'next';
 import Link from 'next/link';
 import Button from '../components/Button';
 import Layout from '../components/Layout';
+import useForm from '../utils/useForm';
 
 const Login: NextPage = () => {
+  const initialState = {
+    email: '',
+    password: '',
+  };
+  const { formValues, handleInputChange, handleSubmit } = useForm(initialState);
+  const { email, password } = formValues;
+
   return (
     <Layout>
       <section>
         <h1 className='font-semibold uppercase text-gray-400 antialiased mb-6 text-center'>
           Login
         </h1>
-        <form className='max-w-xl sm:max-w-sm mx-auto h-96 flex flex-col gap-6 p-8 bg-white shadow-xl shadow-blue-50 rounded border border-blue-50'>
+        <form
+          onSubmit={handleSubmit}
+          className='max-w-xl sm:max-w-sm mx-auto h-96 flex flex-col gap-6 p-8 bg-white shadow-xl shadow-blue-50 rounded border border-blue-50'
+          method='post'
+        >
           <div>
             <label className='font-medium' htmlFor='email'>
               Email
@@ -20,6 +32,8 @@ const Login: NextPage = () => {
               id='email'
               type='email'
               name='email'
+              value={email}
+              onChange={handleInputChange}
             />
           </div>
           <div>
@@ -31,6 +45,8 @@ const Login: NextPage = () => {
               id='password'
               type='password'
               name='password'
+              value={password}
+              onChange={handleInputChange}
             />
           </div>
           <div>
