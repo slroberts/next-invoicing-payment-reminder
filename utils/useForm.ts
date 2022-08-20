@@ -4,7 +4,7 @@ interface FormValues {
   [key: string]: any;
 }
 
-export default function useForm(initialState = {}) {
+export default function useForm(callback: any, initialState = {}) {
   const [formValues, setFormValues] = useState<FormValues>(initialState);
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -14,9 +14,9 @@ export default function useForm(initialState = {}) {
     });
   };
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    console.log(formValues);
+    await callback();
     setFormValues(initialState);
   };
 

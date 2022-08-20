@@ -10,8 +10,15 @@ const CreateAccount: NextPage = () => {
     password: '',
     name: '',
   };
-  const { formValues, handleInputChange, handleSubmit } = useForm(initialState);
+  const { formValues, handleInputChange, handleSubmit } = useForm(
+    registerCallback,
+    initialState
+  );
   const { email, password, name } = formValues;
+
+  async function registerCallback() {
+    console.log(formValues);
+  }
 
   return (
     <Layout>
@@ -35,6 +42,7 @@ const CreateAccount: NextPage = () => {
               name='email'
               value={email}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className='w-full sm:flex-1'>
@@ -48,6 +56,7 @@ const CreateAccount: NextPage = () => {
               name='name'
               value={name}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className='w-full'>
@@ -63,6 +72,7 @@ const CreateAccount: NextPage = () => {
               title='Password should be digits (0 to 9) or alphabets (a to z).'
               value={password}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div className='w-full'>

@@ -9,8 +9,15 @@ const Login: NextPage = () => {
     email: '',
     password: '',
   };
-  const { formValues, handleInputChange, handleSubmit } = useForm(initialState);
+  const { formValues, handleInputChange, handleSubmit } = useForm(
+    loginCallback,
+    initialState
+  );
   const { email, password } = formValues;
+
+  async function loginCallback() {
+    console.log(formValues);
+  }
 
   return (
     <Layout>
@@ -34,6 +41,7 @@ const Login: NextPage = () => {
               name='email'
               value={email}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div>
@@ -47,6 +55,7 @@ const Login: NextPage = () => {
               name='password'
               value={password}
               onChange={handleInputChange}
+              required
             />
           </div>
           <div>
