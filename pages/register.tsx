@@ -1,8 +1,18 @@
+import { Prisma } from '@prisma/client';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import Button from '../components/Button';
 import Layout from '../components/Layout';
 import useForm from '../utils/useForm';
+import { fetcher } from '../utils/fetcher';
+import prisma from '../lib/prisma';
+
+export async function getServerSideProps() {
+  const users: Prisma.UserUncheckedCreateInput[] = await prisma.user.findMany();
+  return {
+    props: { initialUsers: users },
+  };
+}
 
 const CreateAccount: NextPage = () => {
   const initialState = {
@@ -17,7 +27,12 @@ const CreateAccount: NextPage = () => {
   const { email, password, name } = formValues;
 
   async function registerCallback() {
-    console.log(formValues);
+    const body: Prisma.UserCreateInput = {
+      email,
+      name,
+    };
+
+    await fetcher('/api/create', { user: body });
   }
 
   return (
