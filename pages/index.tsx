@@ -1,10 +1,18 @@
 import type { NextPage } from 'next';
+import { useSession, signIn } from 'next-auth/react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Button from '../components/Button';
 import Layout from '../components/Layout';
 
 const Home: NextPage = () => {
+  const { status } = useSession();
+  const router = useRouter();
+
+  if (status === 'authenticated') {
+    router.push('/dashboard');
+  }
+
   return (
     <Layout>
       <section className='flex flex-col lg:flex-row'>
@@ -16,9 +24,13 @@ const Home: NextPage = () => {
             Generate, send, and receive invoices, as well as send automated
             follow-up reminders about overdue payments.
           </p>
-          <Link href='/login' passHref>
-            <Button buttonText='Get Started' customStyle='mt-8' type='button' />
-          </Link>
+
+          <Button
+            buttonText='Get Started - Sign in with Google'
+            customStyle='my-8'
+            type='button'
+            onClick={() => signIn()}
+          />
         </article>
         <figure>
           <Image
