@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useSession, signIn } from 'next-auth/react';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import Button from '../components/Button';
 import Layout from '../components/Layout';
 
@@ -15,9 +15,9 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
-      <section className='flex flex-col lg:flex-row'>
+      <div className='-mt-16 lg:mt-8 flex flex-col items-center lg:flex-row'>
         <article className='flex-1'>
-          <h1 className='text-4xl md:text-6xl'>
+          <h1 className='text-4xl lg:text-6xl'>
             Invoicing &amp; Payment Reminder App
           </h1>
           <p className='mt-6 text-2xl text-slate-500 font-light tracking-wide'>
@@ -26,10 +26,10 @@ const Home: NextPage = () => {
           </p>
 
           <Button
-            buttonText='Get Started - Sign in with Google'
+            buttonText='Sign in with Google'
             customStyle='my-8'
             type='button'
-            onClick={() => signIn()}
+            onClick={() => signIn('google')}
           />
         </article>
         <figure>
@@ -41,7 +41,7 @@ const Home: NextPage = () => {
             priority
           />
         </figure>
-      </section>
+      </div>
     </Layout>
   );
 };

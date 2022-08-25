@@ -3,7 +3,7 @@ import Image from 'next/image';
 import router from 'next/router';
 import Button from './Button';
 
-const AuthBtn = () => {
+export default function AuthBtn() {
   const { data: session, status } = useSession();
 
   if (status === 'loading') {
@@ -17,23 +17,23 @@ const AuthBtn = () => {
   return (
     <div className='flex items-center gap-4'>
       <figure className='mt-1'>
-        <Image
-          src={session?.user?.image as 'string'}
-          alt={session?.user?.name as 'string'}
-          width={40}
-          height={40}
-          className='rounded-full'
-        />
+        {session ? (
+          <Image
+            src={session?.user?.image as 'string'}
+            alt={session?.user?.name as 'string'}
+            width={40}
+            height={40}
+            className='rounded-full'
+          />
+        ) : null}
       </figure>
       <p className='hidden md:block'>{session?.user?.name}</p>
       <Button
         buttonText='Sign out'
         type='button'
-        customStyle='bg-none border text-slate-400 py-2 px-8 font-normal hover:border-blue-400 hover:bg-none hover:hue-rotate-0 hover:shadow-md'
+        customStyle='!bg-none !border !text-slate-400 !py-2 !px-8 !font-normal hover:border-blue-400 !hover:bg-none hover:hue-rotate-0 !hover:shadow-md'
         onClick={() => signOut()}
       />
     </div>
   );
-};
-
-export default AuthBtn;
+}

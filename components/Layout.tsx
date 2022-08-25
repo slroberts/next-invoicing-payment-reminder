@@ -13,7 +13,7 @@ export default function Layout({
   title = 'Invoicing Payment Reminder',
 }: Props) {
   return (
-    <div className=' bg-gradient-to-br from-white to-slate-50'>
+    <div>
       <Head>
         <title>{title}</title>
         <meta
@@ -30,10 +30,10 @@ export default function Layout({
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <main className='md:max-w-3xl lg:max-w-6xl mx-auto px-8 h-screen flex flex-col justify-between'>
+      <main className='md:max-w-4xl lg:max-w-6xl mx-auto px-8 h-screen flex flex-col justify-between'>
         <Header />
 
-        {children}
+        <section className='flex-grow mt-20'>{children}</section>
 
         <Footer />
       </main>
