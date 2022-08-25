@@ -62,7 +62,7 @@ model Client {
   email String
   phoneNumber String
   userId String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   items Item[]
 }
 
