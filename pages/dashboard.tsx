@@ -1,36 +1,49 @@
 import { NextPage } from 'next';
-import AuthBtn from '../components/AuthBtn';
+import prisma from '../lib/prisma';
 import Layout from '../components/Layout';
-import Image from 'next/image';
+import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
+import ClientList from '../components/ClientList';
+import { useSession } from 'next-auth/react';
 
-const DashBoard: NextPage = () => {
+export type ClientProps = {
+  [key: string]: any;
+};
+
+const DashBoard: NextPage = ({ clients }: ClientProps) => {
+  const { data: session } = useSession();
   return (
     <Layout>
-      <section>
-        <div className='absolute top-16 md:top-4 md:right-8'>
-          <AuthBtn />
+      <div className='absolute top-16 md:top-4 md:right-8'>
+        <AuthBtn />
+      </div>
+      <article>
+        <h2 className='font-medium text-xl text-gray-400 antialiased mb-8 text-left'>
+          {clients
+            ? 'Generate Invoice or Add Client'
+            : 'Add Client To Generate Invoice'}
+        </h2>
+
+        <ClientList clients={clients} session={session} />
+
+        <div className='text-center mt-8'>
+          <Button type='button' buttonText='Add Client' />
         </div>
-        <article className='-mt-10'>
-          <h2 className='font-medium text-xl text-gray-400 antialiased mb-6 text-left'>
-            Add Client To Generate Invoice
-          </h2>
-          <figure className='text-center opacity-20'>
-            <Image
-              src='/images/undraw_fill_in_mie5.svg'
-              alt='Invoicing illustration - man in a black shirt with gray pants and black shoes looking at a large invoice.'
-              width={520}
-              height={380}
-              priority
-            />
-          </figure>
-          <div className='text-center mt-8'>
-            <Button type='button' buttonText='Add Client' />
-          </div>
-        </article>
-      </section>
+      </article>
     </Layout>
   );
 };
 
 export default DashBoard;
+
+export async function getStaticProps() {
+  const clients = await prisma.client.findMany({
+    include: {
+      user: true,
+    },
+  });
+
+  return {
+    props: { clients },
+  };
+}
