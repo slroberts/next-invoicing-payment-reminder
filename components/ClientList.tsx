@@ -9,7 +9,7 @@ export default function ClientList({ clients }: ClientProps) {
 
   return (
     <>
-      {clients ? (
+      {loginSession?.user?.clients ? (
         <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12 md:mb-24'>
           {clients.map((client: any) =>
             client.userId === loginSession?.user?.id ? (

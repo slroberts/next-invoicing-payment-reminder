@@ -47,7 +47,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
       </div>
       <article>
         <h2 className='font-medium text-xl text-gray-400 antialiased mb-8 text-left'>
-          {clients.userId === loginSession?.user?.id
+          {loginSession?.user?.clients
             ? 'Generate Invoice or Add Client'
             : 'Add Client To Generate Invoice'}
         </h2>
