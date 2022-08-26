@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
-import { useSession } from 'next-auth/react';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { getSession, useSession } from 'next-auth/react';
 import { useContext, useEffect } from 'react';
 import SessionContext from '../components/SessionContext';
 import Layout from '../components/Layout';
@@ -10,6 +11,22 @@ const getAllClientsByUserId = require('../prisma/Client').getAllClientsByUserId;
 
 export type ClientProps = {
   [key: string]: any;
+};
+
+export const getServerSideProps = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  const session = await getSession({ req });
+
+  if (!session) {
+    return { props: { clients: [] } };
+  }
+
+  const clients = await getAllClientsByUserId(session?.userId);
+  return {
+    props: { clients },
+  };
 };
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
