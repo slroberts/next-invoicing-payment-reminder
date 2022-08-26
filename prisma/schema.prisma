@@ -37,6 +37,25 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Item {
+  id          Int @id @default(autoincrement()) 
+  itemName    String
+  rate        Float
+  hours       Float
+  client      Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    Int
+}
+
+model Client {
+  id          Int @id @default (autoincrement()) 
+  clientName  String
+  email       String
+  phoneNumber String
+  user        User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  items       Item[]
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -45,7 +64,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  clients Client[]
+  clients       Client[]
 }
 
 model VerificationToken {
@@ -54,23 +73,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Client {
-  id Int @default (autoincrement()) @id
-  name String
-  email String
-  phoneNumber String
-  userId String
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items Item[]
-}
-
-model Item {
-  id Int @default(autoincrement()) @id
-  itemName String
-  rate Float
-  hours Float
-  clientId Int
-  client Client @relation(fields: [clientId], references: [id])
 }
