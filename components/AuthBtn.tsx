@@ -1,33 +1,35 @@
-import { useSession, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import router from 'next/router';
+import { useContext } from 'react';
+import SessionContext from './SessionContext';
 import Button from './Button';
 
 export default function AuthBtn() {
-  const { data: session, status } = useSession();
+  const { loginSession, loginStatus } = useContext(SessionContext);
 
-  if (status === 'loading') {
+  if (loginStatus === 'loading') {
     return <p>Loading...</p>;
   }
 
-  if (status === 'unauthenticated') {
+  if (loginStatus === 'unauthenticated') {
     router.push('/');
   }
 
   return (
     <div className='flex items-center gap-4'>
       <figure className='mt-1'>
-        {session ? (
+        {loginSession?.user ? (
           <Image
-            src={session?.user?.image as 'string'}
-            alt={session?.user?.name as 'string'}
+            src={loginSession?.user?.image as 'string'}
+            alt={loginSession?.user?.name as 'string'}
             width={40}
             height={40}
             className='rounded-full'
           />
         ) : null}
       </figure>
-      <p className='hidden md:block'>{session?.user?.name}</p>
+      <p className='hidden md:block'>{loginSession?.user?.name}</p>
       <Button
         buttonText='Sign out'
         type='button'

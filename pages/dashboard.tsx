@@ -1,17 +1,28 @@
 import { NextPage } from 'next';
-import prisma from '../lib/prisma';
+import { useSession } from 'next-auth/react';
+import { useContext, useEffect } from 'react';
+import SessionContext from '../components/SessionContext';
 import Layout from '../components/Layout';
 import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
-import { useSession } from 'next-auth/react';
+const getAllClientsByUserId = require('../prisma/Client').getAllClientsByUserId;
 
 export type ClientProps = {
   [key: string]: any;
 };
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  const { loginSession, setLoginSession, setLoginStatus } =
+    useContext(SessionContext);
+
+  useEffect(() => {
+    setLoginSession(session);
+    setLoginStatus(status);
+  }, [session, status, loginSession, setLoginSession, setLoginStatus]);
+
   return (
     <Layout>
       <div className='absolute top-16 md:top-4 md:right-8'>
@@ -19,12 +30,12 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
       </div>
       <article>
         <h2 className='font-medium text-xl text-gray-400 antialiased mb-8 text-left'>
-          {clients
+          {clients.userId === loginSession?.user?.id
             ? 'Generate Invoice or Add Client'
             : 'Add Client To Generate Invoice'}
         </h2>
 
-        <ClientList clients={clients} session={session} />
+        <ClientList clients={clients} />
 
         <div className='text-center mt-8'>
           <Button type='button' buttonText='Add Client' />
@@ -35,15 +46,3 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
 };
 
 export default DashBoard;
-
-export async function getStaticProps() {
-  const clients = await prisma.client.findMany({
-    include: {
-      user: true,
-    },
-  });
-
-  return {
-    props: { clients },
-  };
-}

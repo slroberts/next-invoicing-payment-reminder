@@ -1,14 +1,18 @@
 import Image from 'next/image';
+import { useContext } from 'react';
 import { ClientProps } from '../pages/dashboard';
+import SessionContext from './SessionContext';
 import Client from './Client';
 
-export default function ClientList({ clients, session }: ClientProps) {
+export default function ClientList({ clients }: ClientProps) {
+  const { loginSession } = useContext(SessionContext);
+
   return (
     <>
       {clients ? (
         <div className='grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12 md:mb-24'>
           {clients.map((client: any) =>
-            client.user.id === session?.user?.id ? (
+            client.userId === loginSession?.user?.id ? (
               <Client key={client.id} client={client} />
             ) : null
           )}
