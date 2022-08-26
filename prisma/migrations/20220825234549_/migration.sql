@@ -27,6 +27,28 @@ CREATE TABLE "Session" (
 );
 
 -- CreateTable
+CREATE TABLE "Item" (
+    "id" SERIAL NOT NULL,
+    "itemName" TEXT NOT NULL,
+    "rate" DOUBLE PRECISION NOT NULL,
+    "hours" DOUBLE PRECISION NOT NULL,
+    "clientId" INTEGER NOT NULL,
+
+    CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Client" (
+    "id" SERIAL NOT NULL,
+    "clientName" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phoneNumber" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT,
@@ -42,28 +64,6 @@ CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "Client" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "Client_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Item" (
-    "id" SERIAL NOT NULL,
-    "itemName" TEXT NOT NULL,
-    "rate" DOUBLE PRECISION NOT NULL,
-    "hours" DOUBLE PRECISION NOT NULL,
-    "clientId" INTEGER NOT NULL,
-
-    CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -88,7 +88,7 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Client" ADD CONSTRAINT "Client_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Item" ADD CONSTRAINT "Item_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Item" ADD CONSTRAINT "Item_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "Client"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Client" ADD CONSTRAINT "Client_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
