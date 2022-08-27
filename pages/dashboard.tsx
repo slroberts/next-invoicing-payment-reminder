@@ -1,12 +1,13 @@
 import { NextPage } from 'next';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession, useSession } from 'next-auth/react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import SessionContext from '../components/SessionContext';
 import Layout from '../components/Layout';
 import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
+import Modal from '../components/Modal';
 const getAllClientsByUserId = require('../prisma/Client').getAllClientsByUserId;
 
 export type ClientProps = {
@@ -31,14 +32,18 @@ export const getServerSideProps = async (
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
   const { data: session, status } = useSession();
-
   const { loginSession, setLoginSession, setLoginStatus } =
     useContext(SessionContext);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     setLoginSession(session);
     setLoginStatus(status);
   }, [session, status, loginSession, setLoginSession, setLoginStatus]);
+
+  const toggleModal = () => {
+    setOpen(!open);
+  };
 
   return (
     <Layout>
@@ -53,9 +58,49 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
         </h2>
 
         <ClientList clients={clients} />
+        <Modal modalTitle='Client Information' open={open} setOpen={setOpen}>
+          <form className='flex flex-col gap-4' method='post'>
+            <div>
+              <label className='font-medium' htmlFor='name'>
+                Full Name
+              </label>
+              <input
+                className='mt-2 border w-full p-3 border-blue-100 rounded'
+                id='name'
+                type='name'
+                name='name'
+                required
+              />
+            </div>
+            <div>
+              <label className='font-medium' htmlFor='email'>
+                Email
+              </label>
+              <input
+                className='mt-2 border w-full p-3 border-blue-100 rounded'
+                id='email'
+                type='email'
+                name='email'
+                required
+              />
+            </div>
+            <div>
+              <label className='font-medium' htmlFor='email'>
+                Phone Number
+              </label>
+              <input
+                className='mt-2 border w-full p-3 border-blue-100 rounded'
+                id='email'
+                type='email'
+                name='email'
+                required
+              />
+            </div>
+          </form>
+        </Modal>
 
         <div className='text-center mt-8'>
-          <Button type='button' buttonText='Add Client' />
+          <Button type='button' buttonText='Add Client' onClick={toggleModal} />
         </div>
       </article>
     </Layout>
