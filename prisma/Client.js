@@ -12,14 +12,14 @@ export const getClientById = async (id) => {
   return client;
 };
 
-export const createClient = async (clientName, email, phoneNumber) => {
+export const createClient = async (clientName, email, phoneNumber, session) => {
   const newClient = await prisma.client.create({
     data: {
       clientName,
       email,
       phoneNumber,
       user: {
-        connect: { email: session?.user?.email },
+        connect: { id: session?.user?.id },
       },
     },
   });
