@@ -1,12 +1,12 @@
 import { Fragment, useRef, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import Button from './Button';
 
 export type ModalProps = {
   open: boolean;
   setOpen: any;
   modalTitle: string;
   children: ReactNode;
+  handleSubmit: () => {};
 };
 
 export default function Modal({
@@ -58,21 +58,6 @@ export default function Modal({
                   </Dialog.Title>
                   <div className='mt-4'>{children}</div>
                 </div>
-              </div>
-              <div className='px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse'>
-                <Button
-                  type='button'
-                  buttonText='Save Client'
-                  onClick={() => setOpen(false)}
-                  customStyle='w-full mb-6 sm:ml-4 sm:mb-0 sm:w-auto'
-                />
-                <Button
-                  type='button'
-                  buttonText='Cancel'
-                  onClick={() => setOpen(false)}
-                  customStyle='w-full sm:w-auto !bg-none !border !text-slate-400 !font-normal hover:border-blue-400 !hover:bg-none hover:hue-rotate-0 !hover:shadow-md'
-                  ref={cancelButtonRef}
-                />
               </div>
             </Dialog.Panel>
           </Transition.Child>
