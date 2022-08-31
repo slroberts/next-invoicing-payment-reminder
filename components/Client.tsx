@@ -3,13 +3,30 @@ import { ClientProps } from '../pages/dashboard';
 import Button from './Button';
 
 export default function Client({ client }: ClientProps) {
+  const deleteClient = async (client: {}) => {
+    try {
+      await fetch('/api/client', {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(client),
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       key={client.id}
       className='flex flex-col justify-between min-w-min text-center border p-8 rounded-sm'
     >
       <div className='relative'>
-        <div className='absolute -top-6 -right-6 opacity-50 hover:opacity-100 transition-opacity cursor-pointer'>
+        <div
+          className='absolute -top-6 -right-6 opacity-50 hover:opacity-100 transition-opacity cursor-pointer'
+          onClick={() => deleteClient(client)}
+        >
           <Image
             src={'/images/close.svg'}
             width={28}

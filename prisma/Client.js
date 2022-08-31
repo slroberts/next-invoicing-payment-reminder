@@ -40,3 +40,16 @@ export const getAllClientsByUserId = async (id) => {
 
   return clients;
 };
+
+export const deleteClient = async (id) => {
+  const deletedNote = await prisma.client.delete({
+    where: {
+      id: id,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  return deletedNote;
+};
