@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { ClientProps } from '../pages/dashboard';
 import Button from './Button';
 
@@ -5,9 +6,19 @@ export default function Client({ client }: ClientProps) {
   return (
     <div
       key={client.id}
-      className=' min-w-min text-center border p-8 rounded-sm'
+      className='flex flex-col justify-between min-w-min text-center border p-8 rounded-sm'
     >
-      <h3 className='text-lg font-semibold'>{client.name}</h3>
+      <div className='relative'>
+        <div className='absolute -top-6 -right-6 opacity-50 hover:opacity-100 transition-opacity cursor-pointer'>
+          <Image
+            src={'/images/close.svg'}
+            width={28}
+            height={28}
+            alt='close icon'
+          />
+        </div>
+      </div>
+      <h3 className='text-lg font-semibold'>{client.clientName}</h3>
 
       <Button
         buttonText='Generate Invoice'
