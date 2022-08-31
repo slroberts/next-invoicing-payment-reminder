@@ -1,6 +1,4 @@
-import { NextPage } from 'next';
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { getSession, useSession } from 'next-auth/react';
+import { GetServerSideProps, NextPage } from 'next';
 import {
   ChangeEventHandler,
   useContext,
@@ -8,39 +6,44 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useSession } from 'next-auth/react';
+import { getAllClientsByUserId } from '../prisma/Client';
+import { unstable_getServerSession } from 'next-auth/next';
+import { authOptions } from '../pages/api/auth/[...nextauth]';
 import SessionContext from '../components/SessionContext';
 import Layout from '../components/Layout';
 import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
 import Modal from '../components/Modal';
-const getAllClientsByUserId = require('../prisma/Client').getAllClientsByUserId;
 
 export type ClientProps = {
-  [key: string]: any;
+  [key: string]: string | any;
 };
 
-export const getServerSideProps = async (
-  req: NextApiRequest,
-  res: NextApiResponse
-) => {
-  const session = await getSession({ req });
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions
+  );
 
   if (!session) {
     return { props: { clients: [] } };
   }
 
   const clients = await getAllClientsByUserId(session?.user?.id);
+
   return {
     props: { clients },
   };
 };
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
-  const cancelButtonRef = useRef(null);
   const { data: session, status } = useSession();
   const { loginSession, setLoginSession, setLoginStatus } =
     useContext(SessionContext);
+  const cancelButtonRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState({
     clientName: '',
@@ -62,7 +65,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
     });
   };
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (e: any) => {
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setFormValues({
       ...formValues,
       [e.currentTarget.name]: e.currentTarget.value,
@@ -93,7 +96,6 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
   };
 
   console.log(clients);
-
   return (
     <Layout>
       <div className='absolute top-16 md:top-4 md:right-8'>
@@ -101,7 +103,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
       </div>
       <article>
         <h2 className='font-medium text-xl text-gray-400 antialiased mb-8 text-left'>
-          {loginSession?.user?.clients
+          {clients.length > 0
             ? 'Generate Invoice or Add Client'
             : 'Add Client To Generate Invoice'}
         </h2>
