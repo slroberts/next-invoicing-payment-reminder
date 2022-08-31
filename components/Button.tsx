@@ -1,6 +1,6 @@
 import { forwardRef, Ref } from 'react';
 
-type Props = {
+type ButtonProps = {
   type: 'submit' | 'button';
   buttonText: string;
   customStyle?: string;
@@ -9,7 +9,7 @@ type Props = {
 
 const Button = forwardRef(
   (
-    { type, buttonText, customStyle, onClick }: Props,
+    { type, buttonText, customStyle, onClick }: ButtonProps,
     ref: Ref<HTMLButtonElement>
   ) => {
     return (
