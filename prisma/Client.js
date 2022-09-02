@@ -3,7 +3,7 @@ import prisma from '../lib/prisma';
 export const getClientById = async (id) => {
   const client = await prisma.client.findUnique({
     where: {
-      id,
+      id: id,
     },
     include: {
       user: true,
