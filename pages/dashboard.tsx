@@ -16,6 +16,7 @@ import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
 import Modal from '../components/Modal';
+import Router from 'next/router';
 
 export type ClientProps = {
   [key: string]: string | any;
@@ -50,6 +51,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
     email: '',
     phoneNumber: '',
   });
+  const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     setLoginSession(session);
@@ -70,6 +72,10 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
       ...formValues,
       [e.currentTarget.name]: e.currentTarget.value,
     });
+
+    if (Object.keys(formValues).length !== 0) {
+      setDisabled(false);
+    }
   };
 
   const handleSubmit = async () => {
@@ -85,17 +91,20 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
         loginSession,
       }),
     });
+
     const newClient = await res.json();
-    console.log('Create successful', { newClient });
+
     setFormValues({
       clientName: '',
       email: '',
       phoneNumber: '',
     });
+
     setOpen(false);
+
+    Router.push(`/dashboard/client/${newClient.id}`);
   };
 
-  console.log(clients);
   return (
     <Layout>
       <div className='absolute top-16 md:top-4 md:right-8'>
@@ -104,7 +113,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
       <article>
         <h2 className='font-medium text-xl text-gray-400 antialiased mb-8 text-left'>
           {clients.length > 0
-            ? 'Generate Invoice or Add Client'
+            ? 'View Invoice or Add New Client'
             : 'Add Client To Generate Invoice'}
         </h2>
 
@@ -163,12 +172,13 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
               />
             </div>
           </form>
-          <div className='mt-4 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse'>
+          <div className='mt-4 py-3 sm:flex sm:flex-row-reverse'>
             <Button
               type='button'
               buttonText='Save Client'
               onClick={handleSubmit}
               customStyle='w-full mb-6 sm:ml-4 sm:mb-0 sm:w-auto'
+              disabled={disabled}
             />
             <Button
               type='button'
