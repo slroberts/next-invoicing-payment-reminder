@@ -17,9 +17,9 @@ export default function AuthBtn() {
   }
 
   return (
-    <div className='flex items-center gap-4'>
-      <figure className='mt-1'>
-        {loginSession?.user ? (
+    <div>
+      {loginSession?.user ? (
+        <figure className='flex items-center gap-4 mt-1'>
           <Image
             src={loginSession?.user?.image as 'string'}
             alt={loginSession?.user?.name as 'string'}
@@ -27,15 +27,15 @@ export default function AuthBtn() {
             height={40}
             className='rounded-full'
           />
-        ) : null}
-      </figure>
-      <p className='hidden md:block'>{loginSession?.user?.name}</p>
-      <Button
-        buttonText='Sign out'
-        type='button'
-        customStyle='!bg-none !border !text-slate-400 !py-2 !px-8 !font-normal hover:border-blue-400 !hover:bg-none hover:hue-rotate-0 !hover:shadow-md'
-        onClick={() => signOut()}
-      />
+          <p className='hidden md:block'>{loginSession?.user?.name}</p>
+          <Button
+            buttonText='Sign out'
+            type='button'
+            customStyle='!bg-none !border !text-slate-400 !py-2 !px-8 !font-normal hover:border-blue-400 !hover:bg-none hover:hue-rotate-0 !hover:shadow-md'
+            onClick={() => signOut()}
+          />
+        </figure>
+      ) : null}
     </div>
   );
 }
