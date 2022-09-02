@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import Router from 'next/router';
 import { ClientProps } from '../pages/dashboard';
 import Button from './Button';
 
@@ -13,6 +15,7 @@ export default function Client({ client }: ClientProps) {
         },
         body: JSON.stringify(client),
       });
+      Router.reload();
     } catch (error) {
       console.log(error);
     }
@@ -37,11 +40,13 @@ export default function Client({ client }: ClientProps) {
       </div>
       <h3 className='text-lg font-semibold'>{client.clientName}</h3>
 
-      <Button
-        buttonText='Generate Invoice'
-        type='button'
-        customStyle='!bg-none !border !text-slate-400 !text-sm !tracking-wide !mt-4 !py-2 !px-6 !font-normal !hover:bg-none hover:border-blue-400 hover:hue-rotate-0 '
-      />
+      <Link href={`/dashboard/client/${client.id}`}>
+        <Button
+          buttonText='View Invoice'
+          type='button'
+          customStyle='!bg-none !border !text-slate-400 !text-sm !tracking-wide !mt-4 !py-2 !px-6 !font-normal !hover:bg-none hover:border-blue-400 hover:hue-rotate-0 '
+        />
+      </Link>
     </div>
   );
 }
