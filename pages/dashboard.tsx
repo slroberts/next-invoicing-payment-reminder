@@ -1,22 +1,15 @@
 import { GetServerSideProps, NextPage } from 'next';
-import {
-  ChangeEventHandler,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { useSession } from 'next-auth/react';
+import { ChangeEventHandler, useContext, useRef, useState } from 'react';
 import { getAllClientsByUserId } from '../prisma/Client';
 import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '../pages/api/auth/[...nextauth]';
 import SessionContext from '../components/SessionContext';
+import Router from 'next/router';
 import Layout from '../components/Layout';
 import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
 import Modal from '../components/Modal';
-import Router from 'next/router';
 
 export type ClientProps = {
   [key: string]: string | any;
@@ -41,9 +34,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
-  const { data: session, status } = useSession();
-  const { loginSession, setLoginSession, setLoginStatus } =
-    useContext(SessionContext);
   const cancelButtonRef = useRef(null);
   const [open, setOpen] = useState(false);
   const [formValues, setFormValues] = useState({
@@ -52,11 +42,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
     phoneNumber: '',
   });
   const [disabled, setDisabled] = useState(true);
-
-  useEffect(() => {
-    setLoginSession(session);
-    setLoginStatus(status);
-  }, [session, status, loginSession, setLoginSession, setLoginStatus]);
+  const { loginSession } = useContext(SessionContext);
 
   const toggleModal = () => {
     setOpen(!open);

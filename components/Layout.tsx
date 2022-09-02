@@ -1,4 +1,6 @@
-import { ReactNode } from 'react';
+import { ReactNode, useContext, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import SessionContext from '../components/SessionContext';
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
@@ -12,6 +14,15 @@ export default function Layout({
   children,
   title = 'Invoicing Payment Reminder',
 }: Props) {
+  const { data: session, status } = useSession();
+  const { loginSession, setLoginSession, setLoginStatus } =
+    useContext(SessionContext);
+
+  useEffect(() => {
+    setLoginSession(session);
+    setLoginStatus(status);
+  }, [session, status, loginSession, setLoginSession, setLoginStatus]);
+
   return (
     <div>
       <Head>
