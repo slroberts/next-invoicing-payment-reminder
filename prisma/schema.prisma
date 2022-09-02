@@ -38,16 +38,16 @@ model Session {
 }
 
 model Item {
-  id          Int @id @default(autoincrement()) 
+  id          String @id @default(cuid()) 
   itemName    String
   rate        Float
   hours       Float
   client      Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  clientId    Int
+  clientId    String
 }
 
 model Client {
-  id          Int @id @default (autoincrement()) 
+  id          String @id @default(cuid()) 
   clientName  String
   email       String
   phoneNumber String

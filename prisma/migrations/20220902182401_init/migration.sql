@@ -28,18 +28,18 @@ CREATE TABLE "Session" (
 
 -- CreateTable
 CREATE TABLE "Item" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "itemName" TEXT NOT NULL,
     "rate" DOUBLE PRECISION NOT NULL,
     "hours" DOUBLE PRECISION NOT NULL,
-    "clientId" INTEGER NOT NULL,
+    "clientId" TEXT NOT NULL,
 
     CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Client" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "clientName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
