@@ -30,8 +30,8 @@ CREATE TABLE "Session" (
 CREATE TABLE "Item" (
     "id" TEXT NOT NULL,
     "itemName" TEXT NOT NULL,
-    "rate" DOUBLE PRECISION NOT NULL,
-    "hours" DOUBLE PRECISION NOT NULL,
+    "rate" TEXT NOT NULL,
+    "hours" TEXT NOT NULL,
     "clientId" TEXT NOT NULL,
 
     CONSTRAINT "Item_pkey" PRIMARY KEY ("id")
