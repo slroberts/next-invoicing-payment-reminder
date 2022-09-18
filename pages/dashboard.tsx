@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from 'next';
-import { ChangeEventHandler, useContext, useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 import { getAllClientsByUserId } from '../prisma/Client';
 import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '../pages/api/auth/[...nextauth]';
@@ -10,6 +10,8 @@ import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
 import Modal from '../components/Modal';
+import useForm from '../utils/useForm';
+import { fetcher } from '../utils/fetcher';
 
 export type ClientProps = {
   [key: string]: string | any;
@@ -34,62 +36,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
-  const cancelButtonRef = useRef(null);
-  const [open, setOpen] = useState(false);
-  const [formValues, setFormValues] = useState({
+  const { loginSession } = useContext(SessionContext);
+  const initialState = {
     clientName: '',
     email: '',
     phoneNumber: '',
-  });
-  const [disabled, setDisabled] = useState(true);
-  const { loginSession } = useContext(SessionContext);
-
-  const toggleModal = () => {
-    setOpen(!open);
-    setFormValues({
-      clientName: '',
-      email: '',
-      phoneNumber: '',
-    });
   };
+  const {
+    disabled,
+    formValues,
+    open,
+    setOpen,
+    toggleModal,
+    handleInputChange,
+    handleSubmit,
+  } = useForm(handleAddClient, initialState);
+  const cancelButtonRef = useRef(null);
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.currentTarget.name]: e.currentTarget.value,
+  function handleAddClient() {
+    fetcher('/api/client', {
+      clientName: formValues.clientName,
+      email: formValues.email,
+      phoneNumber: formValues.phoneNumber,
+      loginSession,
     });
 
-    if (Object.keys(formValues).length !== 0) {
-      setDisabled(false);
-    }
-  };
-
-  const handleSubmit = async () => {
-    let res = await fetch('/api/client', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        clientName: formValues.clientName,
-        email: formValues.email,
-        phoneNumber: formValues.phoneNumber,
-        loginSession,
-      }),
-    });
-
-    const newClient = await res.json();
-
-    setFormValues({
-      clientName: '',
-      email: '',
-      phoneNumber: '',
-    });
-
-    setOpen(false);
-
-    Router.push(`/dashboard/client/${newClient.id}`);
-  };
+    clients.map((client: any) => Router.push(`/dashboard/client/${client.id}`));
+  }
 
   return (
     <Layout>
@@ -104,12 +77,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
         </h2>
 
         <ClientList clients={clients} />
-        <Modal
-          modalTitle='Client Information'
-          open={open}
-          setOpen={setOpen}
-          handleSubmit={handleSubmit}
-        >
+        <Modal modalTitle='Client Information' open={open} setOpen={setOpen}>
           <form
             onSubmit={handleSubmit}
             className='flex flex-col gap-4'
@@ -125,7 +93,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
                 type='text'
                 name='clientName'
                 value={formValues.clientName}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -139,7 +107,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
                 type='email'
                 name='email'
                 value={formValues.email}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -153,7 +121,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
                 type='text'
                 name='phoneNumber'
                 value={formValues.phoneNumber}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 required
               />
             </div>

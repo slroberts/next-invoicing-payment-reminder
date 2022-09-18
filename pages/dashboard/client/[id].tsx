@@ -1,18 +1,20 @@
 import { GetServerSideProps } from 'next';
-import AuthBtn from '../../../components/AuthBtn';
-import Layout from '../../../components/Layout';
+import Router from 'next/router';
+import Link from 'next/link';
+import { useRef } from 'react';
 import { ClientProps } from '../../dashboard';
 import { getClientById } from '../../../prisma/Client';
 import { getAllItemsByClientId } from '../../../prisma/Item';
-import Link from 'next/link';
-import Router from 'next/router';
-import Button from '../../../components/Button';
-import Modal from '../../../components/Modal';
-import { ChangeEventHandler, useRef, useState } from 'react';
+import useForm from '../../../utils/useForm';
+import { fetcher } from '../../../utils/fetcher';
+import AuthBtn from '../../../components/AuthBtn';
+import Layout from '../../../components/Layout';
 import ItemList from '../../../components/ItemList';
+import Modal from '../../../components/Modal';
+import Button from '../../../components/Button';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const id = context?.params?.id as string;
+  const id = context?.params?.id;
   const client = await getClientById(id);
   const items = await getAllItemsByClientId(id);
   return { props: { client, items } };
@@ -20,65 +22,37 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Client = (props: ClientProps) => {
   const { clientName, email, phoneNumber } = props.client;
-  const clientId = props.client.id;
+  const clientId = props.client.id as string;
   const timeElapsed = Date.now();
   const today = new Date(timeElapsed);
-  const cancelButtonRef = useRef(null);
-  const [open, setOpen] = useState(false);
-  const [formValues, setFormValues] = useState({
+
+  const initialState = {
     itemName: '',
     rate: '',
     hours: '',
-  });
-  const [disabled, setDisabled] = useState(true);
-
-  const toggleModal = () => {
-    setOpen(!open);
-    setFormValues({
-      itemName: '',
-      rate: '',
-      hours: '',
-    });
   };
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setFormValues({
-      ...formValues,
-      [e.currentTarget.name]: e.currentTarget.value,
+  const {
+    disabled,
+    formValues,
+    open,
+    setOpen,
+    toggleModal,
+    handleInputChange,
+    handleSubmit,
+  } = useForm(handleAddItem, initialState);
+  const cancelButtonRef = useRef(null);
+
+  function handleAddItem() {
+    fetcher('/api/item', {
+      itemName: formValues.itemName,
+      rate: formValues.rate,
+      hours: formValues.hours,
+      clientId,
     });
-
-    if (Object.keys(formValues).length !== 0) {
-      setDisabled(false);
-    }
-  };
-
-  const handleSubmit = async () => {
-    let res = await fetch('/api/item', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        itemName: formValues.itemName,
-        rate: formValues.rate,
-        hours: formValues.hours,
-        clientId,
-      }),
-    });
-
-    const newItem = await res.json();
-    console.log(newItem);
-
-    setFormValues({
-      itemName: '',
-      rate: '',
-      hours: '',
-    });
-
-    setOpen(false);
 
     Router.reload();
-  };
+  }
 
   return (
     <Layout>
@@ -124,12 +98,7 @@ const Client = (props: ClientProps) => {
         <div className='md:pl-12 w-full'>
           <ItemList items={props.items} />
 
-          <Modal
-            modalTitle='Client Information'
-            open={open}
-            setOpen={setOpen}
-            handleSubmit={handleSubmit}
-          >
+          <Modal modalTitle='Client Information' open={open} setOpen={setOpen}>
             <form
               onSubmit={handleSubmit}
               className='flex flex-col gap-4'
@@ -145,7 +114,7 @@ const Client = (props: ClientProps) => {
                   type='text'
                   name='itemName'
                   value={formValues.itemName}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -159,7 +128,7 @@ const Client = (props: ClientProps) => {
                   type='number'
                   name='rate'
                   value={formValues.rate}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -173,7 +142,7 @@ const Client = (props: ClientProps) => {
                   type='number'
                   name='hours'
                   value={formValues.hours}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                 />
               </div>
@@ -195,7 +164,6 @@ const Client = (props: ClientProps) => {
               />
             </div>
           </Modal>
-
           <div className='text-right mt-4'>
             <Button
               type='button'
@@ -204,6 +172,7 @@ const Client = (props: ClientProps) => {
               customStyle='!bg-none !border !text-slate-400 !py-2 !px-8 !font-normal hover:border-blue-400 !hover:bg-none hover:hue-rotate-0 !hover:shadow-md'
             />
           </div>
+
           {props.items.length > 0 ? (
             <div className='divide-y mt-8'>
               <div className='flex justify-between'>
