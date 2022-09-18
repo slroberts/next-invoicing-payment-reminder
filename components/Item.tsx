@@ -23,7 +23,7 @@ export default function Item({ item }: ItemProps) {
       <td className='px-6 py-4 capitalize'>{item.itemName}</td>
       <td className='px-6 py-4'>{item.rate}</td>
       <td className='px-6 py-4'>{item.hours}</td>
-      <td className='px-6 py-4 text-indigo-600 hover:text-indigo-900 text-right font-semibold'>
+      <td className='px-6 py-4 text-indigo-600 hover:text-indigo-900 text-right font-semibold cursor-pointer'>
         <div onClick={() => deleteItem(item)}>Delete</div>
       </td>
     </tr>
