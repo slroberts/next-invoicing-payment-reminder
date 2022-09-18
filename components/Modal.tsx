@@ -6,7 +6,6 @@ export type ModalProps = {
   setOpen: any;
   modalTitle: string;
   children: ReactNode;
-  handleSubmit: () => any;
 };
 
 export default function Modal({
