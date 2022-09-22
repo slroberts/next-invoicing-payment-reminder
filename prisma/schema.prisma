@@ -40,8 +40,8 @@ model Session {
 model Item {
   id          String @id @default(cuid()) 
   itemName    String
-  rate        Float
-  hours       Float
+  rate        String
+  hours       String
   client      Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
   clientId    String
 }
