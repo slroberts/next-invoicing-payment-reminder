@@ -1,17 +1,16 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useContext, useRef } from 'react';
+import { useForm } from '../utils/useForm';
+import { useFetch } from '../utils/useFetch';
 import { getAllClientsByUserId } from '../prisma/Client';
 import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '../pages/api/auth/[...nextauth]';
 import SessionContext from '../components/SessionContext';
-import Router from 'next/router';
 import Layout from '../components/Layout';
 import AuthBtn from '../components/AuthBtn';
 import Button from '../components/Button';
 import ClientList from '../components/ClientList';
 import Modal from '../components/Modal';
-import useForm from '../utils/useForm';
-import { fetcher } from '../utils/fetcher';
 
 export type ClientProps = {
   [key: string]: string | any;
@@ -36,12 +35,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const DashBoard: NextPage = ({ clients }: ClientProps) => {
+  const cancelButtonRef = useRef(null);
   const { loginSession } = useContext(SessionContext);
   const initialState = {
     clientName: '',
     email: '',
     phoneNumber: '',
   };
+
   const {
     disabled,
     formValues,
@@ -51,17 +52,16 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
     handleInputChange,
     handleSubmit,
   } = useForm(handleAddClient, initialState);
-  const cancelButtonRef = useRef(null);
 
-  function handleAddClient() {
-    fetcher('/api/client', {
-      clientName: formValues.clientName,
-      email: formValues.email,
-      phoneNumber: formValues.phoneNumber,
-      loginSession,
-    });
+  const { fetcher } = useFetch('POST', '/api/client', {
+    clientName: formValues.clientName,
+    email: formValues.email,
+    phoneNumber: formValues.phoneNumber,
+    loginSession,
+  });
 
-    clients.map((client: any) => Router.push(`/dashboard/client/${client.id}`));
+  async function handleAddClient() {
+    fetcher();
   }
 
   return (
@@ -77,6 +77,7 @@ const DashBoard: NextPage = ({ clients }: ClientProps) => {
         </h2>
 
         <ClientList clients={clients} />
+
         <Modal modalTitle='Client Information' open={open} setOpen={setOpen}>
           <form
             onSubmit={handleSubmit}

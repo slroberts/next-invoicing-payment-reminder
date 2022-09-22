@@ -4,7 +4,7 @@ interface FormValues {
   [key: string]: any;
 }
 
-export default function useForm(callback: any, initialState = {}) {
+export const useForm = (callback?: any, initialState = {}) => {
   const [formValues, setFormValues] = useState<FormValues>(initialState);
   const [open, setOpen] = useState(false);
   const [disabled, setDisabled] = useState(true);
@@ -41,4 +41,4 @@ export default function useForm(callback: any, initialState = {}) {
     handleInputChange,
     handleSubmit,
   };
-}
+};

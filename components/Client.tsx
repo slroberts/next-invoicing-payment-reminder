@@ -1,25 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import Router from 'next/router';
+import { useFetch } from '../utils/useFetch';
 import { ClientProps } from '../pages/dashboard';
 import Button from './Button';
 
 export default function Client({ client }: ClientProps) {
-  const deleteClient = async (client: {}) => {
-    try {
-      await fetch('/api/client', {
-        method: 'DELETE',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(client),
-      });
-      Router.reload();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { fetcher } = useFetch('DELETE', '/api/client', client);
+
   return (
     <div
       key={client.id}
@@ -28,7 +15,7 @@ export default function Client({ client }: ClientProps) {
       <div className='relative'>
         <div
           className='absolute -top-6 -right-6 opacity-50 hover:opacity-100 transition-opacity cursor-pointer'
-          onClick={() => deleteClient(client)}
+          onClick={() => fetcher()}
         >
           <Image
             src={'/images/close.svg'}
