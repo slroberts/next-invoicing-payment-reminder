@@ -21,8 +21,8 @@ const Home: NextPage = () => {
             Invoicing &amp; Payment Reminder App
           </h1>
           <p className='mt-6 text-2xl text-slate-500 font-light tracking-wide'>
-            Generate, send, and receive invoices, as well as send automated
-            follow-up reminders about overdue payments.
+            Generate and send invoices, as well as send automated follow-up
+            reminders about overdue payments.
           </p>
 
           <Button
