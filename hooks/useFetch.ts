@@ -1,4 +1,4 @@
-import { useRefresh } from '../utils/useRefresh';
+import { useRefresh } from './useRefresh';
 
 export const useFetch = (method: string, url: string, data?: {}) => {
   const { refreshData } = useRefresh();
