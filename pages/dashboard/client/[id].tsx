@@ -4,14 +4,15 @@ import { useRef } from 'react';
 import { ClientProps } from '../../dashboard';
 import { getClientById } from '../../../prisma/Client';
 import { getAllItemsByClientId } from '../../../prisma/Item';
-import { useForm } from '../../../utils/useForm';
-import { useFetch } from '../../../utils/useFetch';
+import { useForm } from '../../../hooks/useForm';
+import { useFetch } from '../../../hooks/useFetch';
 import AuthBtn from '../../../components/AuthBtn';
 import Layout from '../../../components/Layout';
 import ItemList from '../../../components/ItemList';
 import Modal from '../../../components/Modal';
 import Button from '../../../components/Button';
 import ClientInformation from '../../../components/ClientInformation';
+import TaxAndTotal from '../../../components/TaxAndTotal';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = context?.params?.id;
@@ -50,22 +51,6 @@ const Client = (props: ClientProps) => {
   function handleAddItem() {
     fetcher();
   }
-
-  const rateTotal = () => {
-    let sum = 0;
-
-    for (let item of props.items) {
-      sum += item.rate * item.hours;
-    }
-
-    return sum;
-  };
-
-  const salesTax = Math.round(rateTotal() * 0.04875);
-
-  const totalAmount = () => {
-    return (rateTotal() + salesTax).toFixed(2);
-  };
 
   return (
     <Layout>
@@ -110,6 +95,8 @@ const Client = (props: ClientProps) => {
                   className='mt-2 border w-full p-3 border-blue-100 rounded'
                   id='rate'
                   type='number'
+                  min='0.00'
+                  step='0.01'
                   name='rate'
                   value={formValues.rate}
                   onChange={handleInputChange}
@@ -124,6 +111,8 @@ const Client = (props: ClientProps) => {
                   className='mt-2 border w-full p-3 border-blue-100 rounded'
                   id='hours'
                   type='number'
+                  min='0.00'
+                  step='0.25'
                   name='hours'
                   value={formValues.hours}
                   onChange={handleInputChange}
@@ -158,18 +147,7 @@ const Client = (props: ClientProps) => {
             />
           </div>
 
-          {props.items.length > 0 ? (
-            <div className='divide-y mt-8'>
-              <div className='flex justify-between'>
-                <div className='px-6 py-4 col-start-2'>Tax</div>
-                <div className='px-6 py-4 text-right'>${salesTax}</div>
-              </div>
-              <div className='flex justify-between font-bold'>
-                <div className='px-6 py-4'>Total</div>
-                <div className='px-6 py-4 text-right'>${totalAmount()}</div>
-              </div>
-            </div>
-          ) : null}
+          <TaxAndTotal items={props.items} />
         </div>
       </article>
     </Layout>
