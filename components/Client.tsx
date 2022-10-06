@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useFetch } from '../utils/useFetch';
+import { useFetch } from '../hooks/useFetch';
 import { ClientProps } from '../pages/dashboard';
 import Button from './Button';
 

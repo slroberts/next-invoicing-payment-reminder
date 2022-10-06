@@ -1,4 +1,4 @@
-import { useFetch } from '../utils/useFetch';
+import { useFetch } from '../hooks/useFetch';
 import { ItemProps } from './ItemList';
 
 export default function Item({ item }: ItemProps) {

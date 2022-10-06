@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useContext, useRef } from 'react';
-import { useForm } from '../utils/useForm';
-import { useFetch } from '../utils/useFetch';
+import { useForm } from '../hooks/useForm';
+import { useFetch } from '../hooks/useFetch';
 import { getAllClientsByUserId } from '../prisma/Client';
 import { unstable_getServerSession } from 'next-auth/next';
 import { authOptions } from '../pages/api/auth/[...nextauth]';
